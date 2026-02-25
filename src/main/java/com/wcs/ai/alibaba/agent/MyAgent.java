@@ -2,7 +2,9 @@ package com.wcs.ai.alibaba.agent;
 
 import com.alibaba.cloud.ai.dashscope.api.DashScopeApi;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
+import com.alibaba.cloud.ai.graph.RunnableConfig;
 import com.alibaba.cloud.ai.graph.agent.ReactAgent;
+import com.wcs.ai.alibaba.utils.Constants;
 import lombok.SneakyThrows;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.model.ChatModel;
@@ -11,6 +13,11 @@ public class MyAgent {
 
     @SneakyThrows
     public static void main(String[] args) {
+        callAgent0();
+    }
+
+    @SneakyThrows
+    public static void callAgent0() {
         // 创建模型实例
         DashScopeApi dashScopeApi = DashScopeApi.builder()
                 .apiKey(System.getenv("AI_DASHSCOPE_API_KEY"))
