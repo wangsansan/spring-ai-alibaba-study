@@ -84,7 +84,8 @@ public class CommonConfig {
                 .systemPrompt(Constants.SYSTEM_PROMPT)
                 .tools(weatherTool, userLocationTool)
                 .systemPrompt("You are a helpful weather forecast assistant.")
-                .outputType(ResponseFormat.class)
+//                .outputType(ResponseFormat.class)
+                .outputSchema(Constants.CUSTOM_SCHEMA)
                 .saver(new MemorySaver())
                 .build();
     }
