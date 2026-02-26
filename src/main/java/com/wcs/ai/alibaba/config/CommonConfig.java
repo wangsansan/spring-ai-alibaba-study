@@ -1,11 +1,10 @@
-package com.wcs.ai.alibaba;
+package com.wcs.ai.alibaba.config;
 
 import com.alibaba.cloud.ai.dashscope.api.DashScopeApi;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import com.alibaba.cloud.ai.graph.agent.ReactAgent;
 import com.alibaba.cloud.ai.graph.checkpoint.savers.MemorySaver;
-import com.wcs.ai.alibaba.common.ResponseFormat;
 import com.wcs.ai.alibaba.tool.UserLocationTool;
 import com.wcs.ai.alibaba.tool.WeatherForLocationTool;
 import com.wcs.ai.alibaba.tool.WeatherTool;
