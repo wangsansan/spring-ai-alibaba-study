@@ -4,7 +4,13 @@ import com.alibaba.cloud.ai.dashscope.api.DashScopeApi;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import com.alibaba.cloud.ai.graph.agent.ReactAgent;
+import com.alibaba.cloud.ai.graph.agent.hook.modelcalllimit.ModelCallLimitHook;
 import com.alibaba.cloud.ai.graph.checkpoint.savers.MemorySaver;
+import com.wcs.ai.alibaba.hook.LoggingHook;
+import com.wcs.ai.alibaba.hook.MessageTrimmingHook;
+import com.wcs.ai.alibaba.interceptor.GuardrailInterceptor;
+import com.wcs.ai.alibaba.interceptor.ToolErrorInterceptor;
+import com.wcs.ai.alibaba.interceptor.ToolMonitoringInterceptor;
 import com.wcs.ai.alibaba.tool.UserLocationTool;
 import com.wcs.ai.alibaba.tool.WeatherForLocationTool;
 import com.wcs.ai.alibaba.tool.WeatherTool;
@@ -83,10 +89,21 @@ public class CommonConfig {
                 .model(chatModel)
                 .systemPrompt(Constants.SYSTEM_PROMPT)
                 .tools(weatherTool, userLocationTool)
+                .interceptors(new ToolErrorInterceptor(),new ToolMonitoringInterceptor(), new GuardrailInterceptor()) // 拦截器
                 .systemPrompt("You are a helpful weather forecast assistant.")
 //                .outputType(ResponseFormat.class)
                 .outputSchema(Constants.CUSTOM_SCHEMA)
                 .saver(new MemorySaver())
+                .hooks(new LoggingHook(), new MessageTrimmingHook(), ModelCallLimitHook.builder().runLimit(5).build())  // 钩子，懂的都懂
+                .build();
+    }
+
+    @Bean
+    public ReactAgent architectAgent(ChatModel chatModel) {
+        return ReactAgent.builder()
+                .name("architect_agent")
+                .model(chatModel)
+                .instruction(Constants.INSTRUCTION)   // 详细指令
                 .build();
     }
 
