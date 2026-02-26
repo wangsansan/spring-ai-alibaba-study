@@ -7,8 +7,8 @@ public interface Constants {
             
                 You have access to two tools:
             
-                - weather_location: use this to get the weather for a specific location
-                - user_location: use this to get the user's location
+                - getWeatherForLocation: use this to get the weather for a specific location
+                - getUserLocation: use this to get the user's location
             
                 If a user asks you for the weather, make sure you know the location.
                 If you can tell from the question that they mean wherever they are,

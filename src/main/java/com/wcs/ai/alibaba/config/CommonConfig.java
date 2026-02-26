@@ -32,8 +32,9 @@ public class CommonConfig {
                 .defaultOptions(
                         DashScopeChatOptions.builder()
                                 .model(DashScopeChatModel.DEFAULT_MODEL_NAME)
-                                .temperature(0.5D)
-                                .maxToken(1000)
+                                .temperature(0.5D)         // 控制随机性
+                                .maxToken(1000) // 最大输出长度
+                                .topP(0.9D)                // 核采样参数
                                 .build()
                 ).build();
     }
