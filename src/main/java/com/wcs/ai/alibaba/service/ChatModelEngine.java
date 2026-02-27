@@ -1,8 +1,10 @@
 package com.wcs.ai.alibaba.service;
 
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
+import com.wcs.ai.alibaba.tool.DateTimeTools;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -86,6 +88,21 @@ public class ChatModelEngine {
         Prompt prompt = new Prompt("北京的天气怎么样?", options);
         ChatResponse response = chatModel.call(prompt);
         System.out.println(response.getResult().getOutput().getText());
+    }
+
+    /**
+     * 使用 ChatClient 进行大模型交互，对chatModel封装了一下，类似于ReactAgent
+     * ChatClient是spring-ai提供的，ReactAgent是spring-ai-alibaba提供的
+     * - ReactAgent自动记录交互历史记录
+     */
+    public void callTime() {
+        String response = ChatClient.create(chatModel)
+                .prompt("Can you set an alarm 10 minutes from now?")
+                .tools(new DateTimeTools())
+                .call()
+                .content();
+        System.out.println(response);
+
     }
 
 }

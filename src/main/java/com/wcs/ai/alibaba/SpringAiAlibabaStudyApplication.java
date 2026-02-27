@@ -12,7 +12,8 @@ public class SpringAiAlibabaStudyApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringAiAlibabaStudyApplication.class, args);
 //		ApplicationContextUtils.getBean(AgentEngine.class).callAgent();
-		ApplicationContextUtils.getBean(ChatModelEngine.class).callWithTool();
+//		ApplicationContextUtils.getBean(ChatModelEngine.class).callWithTool();
+		ApplicationContextUtils.getBean(ChatModelEngine.class).callTime();
 	}
 
 }
