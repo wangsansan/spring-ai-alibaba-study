@@ -5,7 +5,9 @@ import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import com.alibaba.cloud.ai.graph.agent.ReactAgent;
 import com.alibaba.cloud.ai.graph.agent.hook.modelcalllimit.ModelCallLimitHook;
+import com.alibaba.cloud.ai.graph.agent.hook.skills.SkillsAgentHook;
 import com.alibaba.cloud.ai.graph.checkpoint.savers.MemorySaver;
+import com.alibaba.cloud.ai.graph.skills.registry.classpath.ClasspathSkillRegistry;
 import com.wcs.ai.alibaba.hook.LoggingHook;
 import com.wcs.ai.alibaba.hook.MessageTrimmingHook;
 import com.wcs.ai.alibaba.interceptor.GuardrailInterceptor;
@@ -106,5 +108,25 @@ public class CommonConfig {
                 .instruction(Constants.INSTRUCTION)   // 详细指令
                 .build();
     }
+
+    @Bean
+    public SkillsAgentHook skillsAgentHook() {
+        ClasspathSkillRegistry registry = ClasspathSkillRegistry.builder()
+                .classpathPath("skills")
+                .build();
+        return SkillsAgentHook.builder()
+                .skillRegistry(registry)
+                .build();
+    }
+
+    @Bean
+    public ReactAgent skillAgent(ChatModel chatModel, SkillsAgentHook skillsAgentHook) {
+        return ReactAgent.builder()
+                .name("skills-agent")
+                .model(chatModel)
+                .hooks(skillsAgentHook)
+                .build();
+    }
+
 
 }

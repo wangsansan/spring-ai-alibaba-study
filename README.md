@@ -1,6 +1,7 @@
 ## 介绍
 - this is a project created by wcs
 - to record the process of study spring-ali-alibaba
+- 学习文档：https://java2ai.com/docs/overview
 
 ## ChatClient 和 ReactAgent的区别
 - ChatClient是spring-ai框架提供的
