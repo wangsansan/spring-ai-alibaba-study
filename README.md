@@ -58,3 +58,8 @@ https://java2ai.com/img/agent/agents/reactagent.png
 - 处理所有工具反馈: 确保为每个需要审查的工具调用提供决策
 - 使用相同的 threadId: 恢复执行时必须使用相同的线程 ID
 - 考虑超时: 实现超时机制以处理长时间未响应的人工审批
+### 记忆管理
+- 长期记忆和短期记忆
+  - 使用Store管理长期记忆，持久化记忆
+  - 可以通过ModelHook或者Tool来处理长期记忆
+  - 短期记忆：MemorySaver即可
