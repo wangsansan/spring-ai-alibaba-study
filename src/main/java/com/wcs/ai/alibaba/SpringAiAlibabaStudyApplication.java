@@ -20,7 +20,14 @@ public class SpringAiAlibabaStudyApplication {
 //		ApplicationContextUtils.getBean(AdvancedAgentEngine.class).callWithModelStore();
 //		ApplicationContextUtils.getBean(AdvancedAgentEngine.class).callWithCombinedMemory();
 //		ApplicationContextUtils.getBean(AdvancedAgentEngine.class).callCrossSession();
-		ApplicationContextUtils.getBean(AdvancedAgentEngine.class).callWithPreferenceLearning();
+//		ApplicationContextUtils.getBean(AdvancedAgentEngine.class).callWithPreferenceLearning();
+//		ApplicationContextUtils.getBean(MultiAgentEngine.class).writeBlog();
+//		ApplicationContextUtils.getBean(MultiAgentEngine.class).createByParallelAgent();
+//		ApplicationContextUtils.getBean(MultiAgentEngine.class).createByRoutingAgent();
+//		ApplicationContextUtils.getBean(MultiAgentEngine.class).createByComplexAgent();
+//		ApplicationContextUtils.getBean(MultiAgentEngine.class).askConditionalAgent();
+		ApplicationContextUtils.getBean(MultiAgentEngine.class).createDataByComplexAgent();
+
 
 	}
 

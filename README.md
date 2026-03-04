@@ -63,3 +63,31 @@ https://java2ai.com/img/agent/agents/reactagent.png
   - 使用Store管理长期记忆，持久化记忆
   - 可以通过ModelHook或者Tool来处理长期记忆
   - 短期记忆：MemorySaver即可
+### 多智能体(多agent)
+- 工具调用 和 交接 两个模式
+- 想象一下字节的coze，每个节点是一个agent，通过工作流把每个agent给关联起来
+  - 每个agent都可以通过占位符读取state里的数据，这样前一个agent的执行结果就可以让后一个agent读取到
+#### 结果合并
+  - 顺序执行，串行结果
+  - 并行执行，可以通过ParallelAgent.MergeStrategy来合并，支持自定义
+  - 路由agent
+    - 由大模型来决定调用哪个agent，但是这样没法在输入里传递参数，因为agent之间不知道顺序了，所以没法使用某个特性agent的输出结果了
+  - 监督者：SupervisorAgent
+    - 在监督者模式中，使用大语言模型（LLM）作为监督者，动态决定将任务路由到哪个子Agent，并支持多步骤循环路由。
+    - 与 LlmRoutingAgent 不同，SupervisorAgent 支持子Agent执行完成后返回监督者，监督者可以根据执行结果继续路由到其他Agent或完成任务。
+    - 流程
+      - 监督者Agent接收用户输入或前序Agent的输出 
+      - LLM分析当前状态并决定最合适的子Agent
+      - 选中的子Agent处理任务
+      - 子Agent执行完成后返回监督者
+      - 监督者根据结果决定：
+        - 继续路由到另一个子Agent（多步骤任务）
+        - 返回 FINISH 完成任务
+#### 自定义智能体
+- ConditionalAgent
+  - 文档太旧，代码不可参考
+#### 复杂循环agent
+- 感觉像是面向对象+面向过程编程
+  - 抽象出主体流程节点，每个节点设置一个agent，归SequentialAgent管理
+  - 每个子agent可以设置自己的agent
+    - 子agent根据自己的需要，看是直接用原生agent，还是又是一个FlowAgent，管理其他子agent
