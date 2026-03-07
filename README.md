@@ -91,3 +91,16 @@ https://java2ai.com/img/agent/agents/reactagent.png
   - 抽象出主体流程节点，每个节点设置一个agent，归SequentialAgent管理
   - 每个子agent可以设置自己的agent
     - 子agent根据自己的需要，看是直接用原生agent，还是又是一个FlowAgent，管理其他子agent
+### 智能体作为工具
+- agent tool比较简单
+  - 在yAgent的tools属性传入AgentTool.getFunctionToolCallback(xAgent)
+### 工作流
+### RAG
+- 可以使用MessagesModelHook，ModelInterceptor，AgentHook 实现
+  - 最明显的差别是AgentHook的实现，因为是agent的hook，所以只会在agent开始时，检索一次而已
+- 所有方式都能实现两步 RAG：检索文档 → 增强上下文 → 生成答案。
+- 最佳实践
+  - 选择合适的架构：
+    - 简单 FAQ → 两步 RAG
+    - 复杂研究任务 → Agentic RAG
+    - 需要质量保证 → 混合 RAG

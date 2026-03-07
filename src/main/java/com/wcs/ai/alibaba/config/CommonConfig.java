@@ -44,12 +44,19 @@ public class CommonConfig {
     public static final String MODEL_API_KEY = "AI_DASHSCOPE_API_KEY";
 
     @Bean
-    public ChatModel chatModel() {
-        // 初始化 ChatModel
-        DashScopeApi dashScopeApi = DashScopeApi.builder()
+    public DashScopeApi dashScopeApi() {
+        return  DashScopeApi.builder()
                 .apiKey(System.getenv(MODEL_API_KEY))
                 .build();
+    }
 
+    /**
+     * spring-ai-alibaba会自动注入一个chatModel，可以不实例化
+     * @param dashScopeApi
+     * @return
+     */
+//    @Bean
+    public ChatModel chatModel(DashScopeApi dashScopeApi) {
         return DashScopeChatModel.builder()
                 .dashScopeApi(dashScopeApi)
                 .defaultOptions(
