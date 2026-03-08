@@ -2,6 +2,7 @@ package com.wcs.ai.alibaba;
 
 import com.wcs.ai.alibaba.rag.RagEngine;
 import com.wcs.ai.alibaba.service.*;
+import com.wcs.ai.alibaba.service.ollama.OllamaEngine;
 import com.wcs.ai.alibaba.utils.ApplicationContextUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,7 +32,8 @@ public class SpringAiAlibabaStudyApplication {
 //		ApplicationContextUtils.getBean(RagEngine.class).call();
 //		ApplicationContextUtils.getBean(RagEngine.class).agenticCall();
 //		ApplicationContextUtils.getBean(RagEngine.class).callWithMultiSourceAgent();
-		ApplicationContextUtils.getBean(RagEngine.class).hybridCall();
+//		ApplicationContextUtils.getBean(RagEngine.class).hybridCall();
+        ApplicationContextUtils.getBean(OllamaEngine.class).call4Test();
 
 	}
 
