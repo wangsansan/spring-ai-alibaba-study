@@ -29,7 +29,7 @@ import java.util.function.Function;
 public class RagConfig {
 
     @Bean
-    public VectorStore vectorStore(EmbeddingModel embeddingModel) {
+    public VectorStore vectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         // 1. 加载文档
         Resource resource = new ClassPathResource("rag/txt/kafka.md");
         TextReader textReader = new TextReader(resource);
@@ -38,7 +38,7 @@ public class RagConfig {
         // 2. 分割文档为块
         TokenTextSplitter splitter = new TokenTextSplitter();
         List<Document> chunks = splitter.apply(documents);
-        SimpleVectorStore vectorStore = SimpleVectorStore.builder(embeddingModel).build();
+        SimpleVectorStore vectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         vectorStore.add(chunks);
         return vectorStore;
     }
@@ -87,20 +87,20 @@ public class RagConfig {
     }
 
     @Bean
-    public ReactAgent ragAgent(ChatModel chatModel, VectorStore vectorStore) {
+    public ReactAgent ragAgent(ChatModel dashScopeChatModel, VectorStore vectorStore) {
         return ReactAgent.builder()
                 .name("rag_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
 //                .hooks(new RAGMessagesHook(vectorStore))
                 .interceptors(new RAGModelInterceptor(vectorStore))
                 .build();
     }
 
     @Bean
-    public ReactAgent agenticRagAgent(ChatModel chatModel, ToolCallback searchCallback) {
+    public ReactAgent agenticRagAgent(ChatModel dashScopeChatModel, ToolCallback searchCallback) {
         return ReactAgent.builder()
                 .name("rag_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .instruction("你是一个智能助手。当需要查找信息时，使用search_documents工具。" +
                         "基于检索到的信息回答用户的问题，并引用相关片段。")
                 .tools(searchCallback)
@@ -108,10 +108,10 @@ public class RagConfig {
     }
 
     @Bean
-    public ReactAgent multiSourceAgent(ChatModel chatModel, ToolCallback webSearchCallback, ToolCallback databaseQueryCallback, ToolCallback searchCallback) {
+    public ReactAgent multiSourceAgent(ChatModel dashScopeChatModel, ToolCallback webSearchCallback, ToolCallback databaseQueryCallback, ToolCallback searchCallback) {
         return ReactAgent.builder()
                 .name("multi_source_rag_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .instruction("你可以访问多个信息源：" +
                                 "1. web_search - 用于最新的互联网信息 " +
                                 "2. database_query - 用于内部数据 " +
@@ -122,10 +122,10 @@ public class RagConfig {
     }
 
     @Bean
-    public ReactAgent hybridRAGAgent(ChatModel chatModel, ToolCallback searchCallback, ToolCallback webSearchCallback) {
+    public ReactAgent hybridRAGAgent(ChatModel dashScopeChatModel, ToolCallback searchCallback, ToolCallback webSearchCallback) {
         return ReactAgent.builder()
                 .name("hybrid_rag_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .instruction("""
                   你是一个智能助手，可以访问多个信息源来回答问题。
                   
@@ -136,8 +136,8 @@ public class RagConfig {
                   4. 如果信息不足，可以多次调用工具
                   """)
                 .tools(searchCallback, webSearchCallback)
-                .hooks(new QueryEnhancementHook(chatModel))
-                .interceptors(new AnswerValidationInterceptor(chatModel))
+                .hooks(new QueryEnhancementHook(dashScopeChatModel))
+                .interceptors(new AnswerValidationInterceptor(dashScopeChatModel))
                 .build();
     }
 

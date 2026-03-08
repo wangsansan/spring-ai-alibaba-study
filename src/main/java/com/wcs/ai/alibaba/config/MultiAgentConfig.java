@@ -21,10 +21,10 @@ import java.util.function.Predicate;
 public class MultiAgentConfig {
 
     @Bean
-    public ReactAgent writerAgent(ChatModel chatModel) {
+    public ReactAgent writerAgent(ChatModel dashScopeChatModel) {
         return ReactAgent.builder()
                 .name("writer_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("专业写作Agent")
                 .instruction("你是一个知名的作家，擅长写作和创作。请根据用户的提问进行回答：{input}。")
                 .outputKey("article")
@@ -32,10 +32,10 @@ public class MultiAgentConfig {
     }
 
     @Bean
-    public ReactAgent reviewerAgent(ChatModel chatModel) {
+    public ReactAgent reviewerAgent(ChatModel dashScopeChatModel) {
             return ReactAgent.builder()
                     .name("reviewer_agent")
-                    .model(chatModel)
+                    .model(dashScopeChatModel)
                     .description("专业评审Agent")
                     .instruction(
                         "你是一个知名的评论家，擅长对文章进行评论和修改。" +
@@ -62,11 +62,11 @@ public class MultiAgentConfig {
     }
 
     @Bean
-    public ParallelAgent parallelAgent(ChatModel chatModel) {
+    public ParallelAgent parallelAgent(ChatModel dashScopeChatModel) {
         // 创建多个专业化Agent
         ReactAgent proseWriterAgent = ReactAgent.builder()
                 .name("prose_writer_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("专门写散文的AI助手")
                 .instruction("你是一个知名的散文作家，擅长写优美的散文。" +
                         "用户会给你一个主题：{input}，你只需要创作一篇100字左右的散文。")
@@ -75,7 +75,7 @@ public class MultiAgentConfig {
 
         ReactAgent poemWriterAgent = ReactAgent.builder()
                 .name("poem_writer_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("专门写现代诗的AI助手")
                 .instruction("你是一个知名的现代诗人，擅长写现代诗。" +
                         "用户会给你的主题是：{input}，你只需要创作一首现代诗。")
@@ -84,7 +84,7 @@ public class MultiAgentConfig {
 
         ReactAgent summaryAgent = ReactAgent.builder()
                 .name("summary_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("专门做内容总结的AI助手")
                 .instruction("你是一个专业的内容分析师，擅长对主题进行总结和提炼。" +
                         "用户会给你一个主题：{input}，你只需要对这个主题进行简要总结。")
@@ -103,11 +103,11 @@ public class MultiAgentConfig {
     }
 
     @Bean
-    public LlmRoutingAgent routingAgent(ChatModel chatModel) {
+    public LlmRoutingAgent routingAgent(ChatModel dashScopeChatModel) {
         // 创建专业化的子Agent
         ReactAgent writerAgent = ReactAgent.builder()
                 .name("writer_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("擅长创作各类文章，包括散文、诗歌等文学作品")
                 .instruction("你是一个知名的作家，擅长写作和创作。请根据用户的提问进行回答。")
                 .outputKey("writer_output")
@@ -115,7 +115,7 @@ public class MultiAgentConfig {
 
         ReactAgent reviewerAgent = ReactAgent.builder()
                 .name("reviewer_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("擅长对文章进行评论、修改和润色")
                 .instruction("你是一个知名的评论家，擅长对文章进行评论和修改。" +
                         "对于散文类文章，请确保文章中必须包含对于西湖风景的描述。")
@@ -124,7 +124,7 @@ public class MultiAgentConfig {
 
         ReactAgent translatorAgent = ReactAgent.builder()
                 .name("translator_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("擅长将文章翻译成各种语言")
                 .instruction("你是一个专业的翻译家，能够准确地将文章翻译成目标语言。")
                 .outputKey("translator_output")
@@ -134,7 +134,7 @@ public class MultiAgentConfig {
         return LlmRoutingAgent.builder()
                 .name("content_routing_agent")
                 .description("根据用户需求智能路由到合适的专家Agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .subAgents(List.of(writerAgent, reviewerAgent, translatorAgent))
                 .systemPrompt(Constants.ROUTING_SYSTEM_PROMPT) // 可以通过systemPrompt来提供额外的路由指导
                 .instruction(Constants.ROUTING_INSTRUCTION) // 可以通过instruction来提供额外的路由指导
@@ -142,11 +142,11 @@ public class MultiAgentConfig {
     }
 
     @Bean
-    public SupervisorAgent supervisorAgent(ChatModel chatModel) {
+    public SupervisorAgent supervisorAgent(ChatModel dashScopeChatModel) {
         // 监督者的子Agent
         ReactAgent translatorAgent = ReactAgent.builder()
                 .name("translator_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("擅长将文章翻译成各种语言")
                 .instruction("你是一个专业的翻译家，能够准确地将文章翻译成目标语言。待翻译文章： {article_content}。")
                 .outputKey("translator_output")
@@ -154,7 +154,7 @@ public class MultiAgentConfig {
 
         ReactAgent reviewerAgent = ReactAgent.builder()
                 .name("reviewer_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("擅长对文章进行评审和修改")
                 .instruction("你是一个知名的评论家，擅长对文章进行评论和修改。待评审文章： {article_content}。")
                 .outputKey("reviewer_output")
@@ -163,14 +163,14 @@ public class MultiAgentConfig {
         ReactAgent mainAgent = ReactAgent.builder()
                 .name("general-assistant")
                 .description("内容管理监督者的主agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .build();
 
         // 创建监督者Agent
         return SupervisorAgent.builder()
                 .name("content_supervisor")
                 .description("内容管理监督者，负责协调写作、翻译等任务")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .systemPrompt(Constants.SUPERVISOR_SYSTEM_PROMPT_NEW)  // 居然deprecated了
                 .instruction(Constants.SUPERVISOR_INSTRUCTION)
                 .subAgents(List.of(translatorAgent, reviewerAgent))
@@ -179,11 +179,11 @@ public class MultiAgentConfig {
     }
 
     @Bean
-    public SequentialAgent sequentialAgent(ChatModel chatModel, SupervisorAgent supervisorAgent) {
+    public SequentialAgent sequentialAgent(ChatModel dashScopeChatModel, SupervisorAgent supervisorAgent) {
         // 第一个Agent：写文章
         ReactAgent writerAgent = ReactAgent.builder()
                 .name("article_writer")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("专业写作Agent，负责创作文章")
                 .instruction("你是一个知名的作家，擅长写作和创作。请根据用户的提问进行回答：{input}。")
                 .outputKey("article_content")
@@ -200,11 +200,11 @@ public class MultiAgentConfig {
      * 该条件agent，官方文档的demo暂不可用
      */
 //    @Bean
-    public ConditionalAgent conditionalAgent(ChatModel chatModel) {
+    public ConditionalAgent conditionalAgent(ChatModel dashScopeChatModel) {
         // 创建两个分支Agent
         ReactAgent urgentAgent = ReactAgent.builder()
                 .name("urgent_handler")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("处理紧急请求")
                 .instruction("你需要快速响应紧急情况...")
                 .outputKey("urgent_result")
@@ -212,7 +212,7 @@ public class MultiAgentConfig {
 
         ReactAgent normalAgent = ReactAgent.builder()
                 .name("normal_handler")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("处理常规请求")
                 .instruction("你可以详细分析和处理常规请求...")
                 .outputKey("normal_result")
@@ -237,11 +237,11 @@ public class MultiAgentConfig {
     }
 
     @Bean
-    public SequentialAgent complexAgent(ChatModel chatModel) {
+    public SequentialAgent complexAgent(ChatModel dashScopeChatModel) {
         // 1. 创建研究Agent（并行执行）
         ReactAgent webResearchAgent = ReactAgent.builder()
                 .name("web_research")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("从互联网搜索信息的AI助手")
                 .instruction("请搜索并收集关于以下主题的信息：{input}")
                 .outputKey("web_data")
@@ -249,7 +249,7 @@ public class MultiAgentConfig {
 
         ReactAgent selfCreatorAgent = ReactAgent.builder()
                 .name("self_creator")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("自行创作营销文案的AI助手")
                 .instruction("你是一个知名的自媒体营销号，擅长编写抓眼球的文案。" +
                         "用户会给你一个主题：{input}，你只需要创作一篇100字左右的营销文案。")
@@ -271,7 +271,7 @@ public class MultiAgentConfig {
         // 2. 创建分析Agent
         ReactAgent analysisAgent = ReactAgent.builder()
                 .name("analysis_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("分析研究数据")
                 .instruction("请分析以下收集到的数据并提供见解：{research_data.web_data} 和 {research_data.create_data}")
                 .outputKey("analysis_result")
@@ -280,7 +280,7 @@ public class MultiAgentConfig {
         // 3. 创建报告Agent（路由选择格式）
         ReactAgent pdfReportAgent = ReactAgent.builder()
                 .name("pdf_report")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("生成PDF格式报告")
                 .instruction("""
               请根据研究结果和分析结果生成一份PDF格式的报告。
@@ -293,7 +293,7 @@ public class MultiAgentConfig {
 
         ReactAgent htmlReportAgent = ReactAgent.builder()
                 .name("html_report")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .description("生成HTML格式报告")
                 .instruction("""
               请根据研究结果和分析结果生成一份HTML格式的报告。
@@ -307,7 +307,7 @@ public class MultiAgentConfig {
         LlmRoutingAgent reportAgent = LlmRoutingAgent.builder()
                 .name("report_router")
                 .description("根据需求选择报告格式")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .subAgents(List.of(pdfReportAgent, htmlReportAgent))
                 .build();
 

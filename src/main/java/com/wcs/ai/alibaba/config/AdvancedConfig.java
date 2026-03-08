@@ -27,10 +27,10 @@ public class AdvancedConfig {
     }
 
     @Bean
-    public ReactAgent memoryAgent(ChatModel chatModel, ToolCallback getUserInfoTool) {
+    public ReactAgent memoryAgent(ChatModel dashScopeChatModel, ToolCallback getUserInfoTool) {
         return ReactAgent.builder()
                 .name("memory_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .tools(getUserInfoTool)
                 .saver(new MemorySaver())
                 .build();
@@ -45,51 +45,51 @@ public class AdvancedConfig {
     }
 
     @Bean
-    public ReactAgent saveMemoryAgent(ChatModel chatModel, ToolCallback saveUserInfoTool) {
+    public ReactAgent saveMemoryAgent(ChatModel dashScopeChatModel, ToolCallback saveUserInfoTool) {
         return ReactAgent.builder()
                 .name("save_memory_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .tools(saveUserInfoTool)
                 .saver(new MemorySaver())
                 .build();
     }
 
     @Bean
-    public ReactAgent modelMemoryAgent(ChatModel chatModel) {
+    public ReactAgent modelMemoryAgent(ChatModel dashScopeChatModel) {
         // 创建带有记忆拦截器的Agent
         return ReactAgent.builder()
                 .name("memory_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .hooks(new StoreHook())
                 .saver(new MemorySaver())
                 .build();
     }
 
     @Bean
-    public ReactAgent combinedMemoryAgent(ChatModel chatModel) {
+    public ReactAgent combinedMemoryAgent(ChatModel dashScopeChatModel) {
         return ReactAgent.builder()
                 .name("combined_memory_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .hooks(new CombinedMemoryHook())
                 .saver(new MemorySaver()) // 短期记忆
                 .build();
     }
 
     @Bean
-    public ReactAgent sessionAgent(ChatModel chatModel, ToolCallback getUserInfoTool, ToolCallback saveUserInfoTool) {
+    public ReactAgent sessionAgent(ChatModel dashScopeChatModel, ToolCallback getUserInfoTool, ToolCallback saveUserInfoTool) {
         return ReactAgent.builder()
                 .name("sessionAgent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .tools(getUserInfoTool, saveUserInfoTool)
                 .saver(new MemorySaver()) // 短期记忆
                 .build();
     }
 
     @Bean
-    public ReactAgent learningAgent(ChatModel chatModel) {
+    public ReactAgent learningAgent(ChatModel dashScopeChatModel) {
         return ReactAgent.builder()
                 .name("learning_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .hooks(new PreferenceLearningHook())
                 .saver(new MemorySaver())
                 .build();

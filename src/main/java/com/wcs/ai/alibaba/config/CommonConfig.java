@@ -56,7 +56,7 @@ public class CommonConfig {
      * @return
      */
 //    @Bean
-    public ChatModel chatModel(DashScopeApi dashScopeApi) {
+    public ChatModel dashScopeChatModel(DashScopeApi dashScopeApi) {
         return DashScopeChatModel.builder()
                 .dashScopeApi(dashScopeApi)
                 .defaultOptions(
@@ -70,7 +70,7 @@ public class CommonConfig {
     }
 
     @Bean
-    public ReactAgent weatherAgent(ChatModel chatModel) {
+    public ReactAgent weatherAgent(ChatModel dashScopeChatModel) {
         ToolCallback weatherTool = FunctionToolCallback.builder("get_weather", new WeatherTool())
                 .description("Get weather for a given city")
                 .inputType(String.class)
@@ -79,7 +79,7 @@ public class CommonConfig {
         // 创建 agent
         return ReactAgent.builder()
                 .name("weather_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .tools(weatherTool)
                 .systemPrompt("You are a helpful weather forecast assistant.")
                 .saver(new MemorySaver())
@@ -106,11 +106,11 @@ public class CommonConfig {
     }
 
     @Bean
-    public ReactAgent weatherPunAgent(ChatModel chatModel, ToolCallback weatherTool, ToolCallback userLocationTool) {
+    public ReactAgent weatherPunAgent(ChatModel dashScopeChatModel, ToolCallback weatherTool, ToolCallback userLocationTool) {
         // 创建 agent
         return ReactAgent.builder()
                 .name("weather_pun_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .systemPrompt(Constants.SYSTEM_PROMPT)
                 .tools(weatherTool, userLocationTool)
                 .interceptors(new ToolErrorInterceptor(),new ToolMonitoringInterceptor(), new GuardrailInterceptor()) // 拦截器
@@ -123,10 +123,10 @@ public class CommonConfig {
     }
 
     @Bean
-    public ReactAgent architectAgent(ChatModel chatModel) {
+    public ReactAgent architectAgent(ChatModel dashScopeChatModel) {
         return ReactAgent.builder()
                 .name("architect_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .instruction(Constants.INSTRUCTION)   // 详细指令
                 .build();
     }
@@ -142,16 +142,16 @@ public class CommonConfig {
     }
 
     @Bean
-    public ReactAgent skillAgent(ChatModel chatModel, SkillsAgentHook skillsAgentHook) {
+    public ReactAgent skillAgent(ChatModel dashScopeChatModel, SkillsAgentHook skillsAgentHook) {
         return ReactAgent.builder()
                 .name("skills-agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .hooks(skillsAgentHook)
                 .build();
     }
 
     @Bean
-    public ReactAgent approvalAgent(ChatModel chatModel) {
+    public ReactAgent approvalAgent(ChatModel dashScopeChatModel) {
         ToolCallback weatherTool = FunctionToolCallback.builder("get_weather_v1", new WeatherTool())
                 .description("Get weather for a given city")
                 .inputType(String.class)
@@ -167,7 +167,7 @@ public class CommonConfig {
         // 创建Agent
         return ReactAgent.builder()
                 .name("approval_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .tools(weatherTool)
                 .hooks(List.of(humanInTheLoopHook))
                 .saver(memorySaver)
@@ -184,7 +184,7 @@ public class CommonConfig {
     }
 
     @Bean
-    public ReactAgent poetAgent(ChatModel chatModel, ToolCallback poetTool) {
+    public ReactAgent poetAgent(ChatModel dashScopeChatModel, ToolCallback poetTool) {
         // 1. 配置检查点
         MemorySaver memorySaver = new MemorySaver();
 
@@ -198,7 +198,7 @@ public class CommonConfig {
         // 3. 创建Agent
         return ReactAgent.builder()
                 .name("poet_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 .tools(List.of(poetTool))
                 .hooks(List.of(humanInTheLoopHook))
                 .saver(memorySaver)
@@ -212,7 +212,7 @@ public class CommonConfig {
 
 
     @Bean
-    public ReactAgent qaAgent(ChatModel chatModel, MemorySaver saver) {
+    public ReactAgent qaAgent(ChatModel dashScopeChatModel, MemorySaver saver) {
         // 1. 创建工具回调
         ToolCallback searchTool = FunctionToolCallback
                 .builder("search", (args) -> "搜索结果：AI Agent是能够感知环境、自主决策并采取行动的智能系统。")
@@ -223,7 +223,7 @@ public class CommonConfig {
         // 3. 创建带有人工介入Hook的ReactAgent
         return ReactAgent.builder()
                 .name("qa_agent")
-                .model(chatModel)
+                .model(dashScopeChatModel)
                 // 注意此处的prompt，要限定agent只能使用search工具，否则可能通过其他方式查询结果，导致工作流不会中断
                 .instruction("你是一个问答专家，负责回答用户的问题。如果需要搜索信息，必须且只能使用search工具。 用户问题：{cleaned_input}")
                 .outputKey("qa_result")

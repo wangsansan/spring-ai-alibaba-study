@@ -23,7 +23,7 @@ import java.util.List;
 public class ChatModelEngine {
 
     @Resource
-    private ChatModel chatModel;
+    private ChatModel dashScopeChatModel;
 
     @SneakyThrows
     public void callTest() {
@@ -32,14 +32,14 @@ public class ChatModelEngine {
                 .temperature(0.3)  // 更低的温度，更确定的输出
                 .maxToken(500)
                 .build();
-        ChatResponse chatResponse = chatModel.call(new Prompt(new UserMessage("解释什么是微服务架构"), runtimeOptions));
+        ChatResponse chatResponse = dashScopeChatModel.call(new Prompt(new UserMessage("解释什么是微服务架构"), runtimeOptions));
         System.out.println(chatResponse.getResult().getOutput().getText());
     }
 
     @SneakyThrows
     public void streamAnswer() {
         // 使用流式 API
-        Flux<ChatResponse> responseStream = chatModel.stream(
+        Flux<ChatResponse> responseStream = dashScopeChatModel.stream(
                 new Prompt("详细解释Spring Boot的自动配置原理")
         );
 
@@ -66,7 +66,7 @@ public class ChatModelEngine {
         );
 
         Prompt prompt = new Prompt(messages);
-        ChatResponse response = chatModel.call(prompt);
+        ChatResponse response = dashScopeChatModel.call(prompt);
         System.out.println(response.getResult().getOutput().getText());
     }
 
@@ -86,7 +86,7 @@ public class ChatModelEngine {
                 .build();
 
         Prompt prompt = new Prompt("北京的天气怎么样?", options);
-        ChatResponse response = chatModel.call(prompt);
+        ChatResponse response = dashScopeChatModel.call(prompt);
         System.out.println(response.getResult().getOutput().getText());
     }
 
@@ -96,7 +96,7 @@ public class ChatModelEngine {
      * - ReactAgent自动记录交互历史记录
      */
     public void callTime() {
-        String response = ChatClient.create(chatModel)
+        String response = ChatClient.create(dashScopeChatModel)
                 .prompt("Can you set an alarm 10 minutes from now?")
                 .tools(new DateTimeTools())
                 .call()
