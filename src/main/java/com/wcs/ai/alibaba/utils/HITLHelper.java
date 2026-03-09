@@ -13,9 +13,9 @@ public class HITLHelper {
                 .state(interruptionMetadata.state());
 
         interruptionMetadata.toolFeedbacks().forEach(toolFeedback -> {
-            System.out.println("工具名称: " + toolFeedback.getName());
-            System.out.println("工具参数: " + toolFeedback.getArguments());
-            System.out.println("工具描述: " + toolFeedback.getDescription());
+            System.out.println("工具名称：" + toolFeedback.name());
+            System.out.println("工具参数：" + toolFeedback.arguments());
+            System.out.println("工具描述：" + toolFeedback.description());
             builder.addToolFeedback(
                     InterruptionMetadata.ToolFeedback.builder(toolFeedback)
                             .result(InterruptionMetadata.ToolFeedback.FeedbackResult.APPROVED)
@@ -60,7 +60,7 @@ public class HITLHelper {
                 .state(interruptionMetadata.state());
 
         interruptionMetadata.toolFeedbacks().forEach(toolFeedback -> {
-            if (toolFeedback.getName().equals(toolName)) {
+            if (toolFeedback.name().equals(toolName)) {
                 builder.addToolFeedback(
                         InterruptionMetadata.ToolFeedback.builder(toolFeedback)
                                 .arguments(newArguments)
