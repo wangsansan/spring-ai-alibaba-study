@@ -79,16 +79,6 @@ public class HITLHelper {
         return builder.build();
     }
 
-    public static void main(String[] args) {
-        InterruptionMetadata interruptionMetadata = null;
-        // 使用示例
-        InterruptionMetadata approvalMetadata = HITLHelper.approveAll(interruptionMetadata);
-        InterruptionMetadata rejectMetadata = HITLHelper.rejectAll(interruptionMetadata, "操作不安全");
-        InterruptionMetadata editMetadata = HITLHelper.editTool(
-                interruptionMetadata,
-                "execute_sql",
-                "{\"query\": \"SELECT * FROM records LIMIT 10\"}"
-        );
-    }
+    // 使用示例请参考单元测试：HITLHelperTest
 
 }

@@ -30,7 +30,7 @@ public class ToolMonitoringInterceptor extends ToolInterceptor {
     }
 
     private void logError(ToolCallRequest request, Exception e, Long usedTime) {
-        log.error("success, request:[{}], usedTime:[{}]", JSON.toJSONString(request), usedTime, e);
+        log.error("error, request:[{}], usedTime:[{}]", JSON.toJSONString(request), usedTime, e);
     }
 
     @Override
