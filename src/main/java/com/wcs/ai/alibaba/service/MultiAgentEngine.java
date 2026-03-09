@@ -33,8 +33,8 @@ public class MultiAgentEngine {
     @Resource
     private SequentialAgent complexAgent;
 
-//    @Resource
-//    private ConditionalAgent conditionalAgent;
+    @Resource
+    private ConditionalAgent conditionalAgent;
 
     @SneakyThrows
     public void writeBlog() {
@@ -121,6 +121,28 @@ public class MultiAgentEngine {
                     System.out.println("分析结果: " + r));
             state.value("html_report").ifPresent(r ->
                     System.out.println("HTML报告: " + r));
+        });
+    }
+
+    @SneakyThrows
+    public void callConditional() {
+        // 使用
+        Optional<OverAllState> result1 = conditionalAgent.invoke("这是一个紧急问题需要立即处理");
+        result1.ifPresent(overAllState -> {
+            System.out.println("=======urgent invoke=========");
+            System.out.println("=======urgent result=========");
+            System.out.println(overAllState.value("urgent_result"));
+            System.out.println("=======normal result=========");
+            System.out.println(overAllState.value("normal_result"));
+        });
+        // 会路由到 urgentAgent
+        Optional<OverAllState> result2 = conditionalAgent.invoke("请帮我分析一下这个问题");
+        result2.ifPresent(overAllState -> {
+            System.out.println("=======normal invoke=========");
+            System.out.println("=======urgent result=========");
+            System.out.println(overAllState.value("urgent_result"));
+            System.out.println("=======normal result=========");
+            System.out.println(overAllState.value("normal_result"));
         });
     }
 

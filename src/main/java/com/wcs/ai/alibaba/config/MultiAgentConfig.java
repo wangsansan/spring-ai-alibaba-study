@@ -199,7 +199,7 @@ public class MultiAgentConfig {
     /**
      * 该条件agent，官方文档的demo暂不可用
      */
-//    @Bean
+    @Bean
     public ConditionalAgent conditionalAgent(ChatModel dashScopeChatModel) {
         // 创建两个分支Agent
         ReactAgent urgentAgent = ReactAgent.builder()
@@ -222,6 +222,7 @@ public class MultiAgentConfig {
         Predicate<Map<String, Object>> isUrgent = state -> {
             Object input = state.get("input");
             if (input instanceof String) {
+                System.out.println("现在要处理一个需求");
                 return ((String) input).contains("紧急") || ((String) input).contains("urgent");
             }
             return false;
@@ -233,6 +234,7 @@ public class MultiAgentConfig {
                 .condition(isUrgent)
                 .trueAgent(urgentAgent)
                 .falseAgent(normalAgent)
+                .subAgents(List.of(urgentAgent, normalAgent))
                 .build();
     }
 

@@ -1,5 +1,7 @@
 package com.wcs.ai.alibaba.agent.flow;
 
+import com.alibaba.cloud.ai.graph.OverAllState;
+import com.alibaba.cloud.ai.graph.RunnableConfig;
 import com.alibaba.cloud.ai.graph.StateGraph;
 import com.alibaba.cloud.ai.graph.agent.Agent;
 import com.alibaba.cloud.ai.graph.agent.flow.agent.FlowAgent;
@@ -7,9 +9,11 @@ import com.alibaba.cloud.ai.graph.agent.flow.builder.FlowAgentBuilder;
 import com.alibaba.cloud.ai.graph.agent.flow.builder.FlowGraphBuilder;
 import com.alibaba.cloud.ai.graph.agent.flow.enums.FlowAgentEnum;
 import com.alibaba.cloud.ai.graph.exception.GraphStateException;
+import lombok.SneakyThrows;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class ConditionalAgent extends FlowAgent {
@@ -29,12 +33,22 @@ public class ConditionalAgent extends FlowAgent {
     @Override
     protected StateGraph buildSpecificGraph(FlowGraphBuilder.FlowGraphConfig config)
             throws GraphStateException {
-        config.setSubAgents(List.of(trueAgent, falseAgent));
-        // 使用 FlowGraphBuilder 构建自定义图结构
+        // 使用顺序执行图结构，避免条件流的复杂配置
         return FlowGraphBuilder.buildGraph(
-                FlowAgentEnum.CONDITIONAL.getType(),
+                FlowAgentEnum.SEQUENTIAL.getType(),
                 config
         );
+    }
+
+    @SneakyThrows
+    @Override
+    public Optional<OverAllState> doInvoke(Map<String, Object> input, RunnableConfig runnableConfig)  {
+        // 在invoke方法中实现条件逻辑
+        if (condition.test(input)) {
+            return trueAgent.invoke(input);
+        } else {
+            return falseAgent.invoke(input);
+        }
     }
 
     public static ConditionalAgentBuilder builder() {
