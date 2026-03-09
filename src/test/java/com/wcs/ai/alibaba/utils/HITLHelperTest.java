@@ -16,18 +16,9 @@ class HITLHelperTest {
 
     @Test
     void testApproveAll() {
-        // 准备测试数据
-        InterruptionMetadata.ToolFeedback feedback1 = InterruptionMetadata.ToolFeedback.builder()
-                .name("get_weather")
-                .arguments("{\"city\": \"北京\"}")
-                .description("查询天气工具")
-                .build();
-
-        InterruptionMetadata.ToolFeedback feedback2 = InterruptionMetadata.ToolFeedback.builder()
-                .name("execute_sql")
-                .arguments("{\"query\": \"SELECT * FROM users\"}")
-                .description("执行 SQL 工具")
-                .build();
+        // 准备测试数据 - 使用 builder 复制现有 feedback 并设置 result
+        InterruptionMetadata.ToolFeedback feedback1 = createToolFeedback("get_weather", "{\"city\": \"北京\"}", "查询天气工具");
+        InterruptionMetadata.ToolFeedback feedback2 = createToolFeedback("execute_sql", "{\"query\": \"SELECT * FROM users\"}", "执行 SQL 工具");
 
         InterruptionMetadata interruptionMetadata = InterruptionMetadata.builder()
                 .nodeId("test_node")
@@ -52,11 +43,7 @@ class HITLHelperTest {
     @Test
     void testRejectAll() {
         // 准备测试数据
-        InterruptionMetadata.ToolFeedback feedback = InterruptionMetadata.ToolFeedback.builder()
-                .name("delete_data")
-                .arguments("{\"table\": \"users\"}")
-                .description("删除数据工具")
-                .build();
+        InterruptionMetadata.ToolFeedback feedback = createToolFeedback("delete_data", "{\"table\": \"users\"}", "删除数据工具");
 
         InterruptionMetadata interruptionMetadata = InterruptionMetadata.builder()
                 .nodeId("test_node")
@@ -80,17 +67,8 @@ class HITLHelperTest {
     @Test
     void testEditTool() {
         // 准备测试数据
-        InterruptionMetadata.ToolFeedback feedback1 = InterruptionMetadata.ToolFeedback.builder()
-                .name("execute_sql")
-                .arguments("{\"query\": \"DELETE FROM users WHERE 1=1\"}")
-                .description("执行 SQL 工具")
-                .build();
-
-        InterruptionMetadata.ToolFeedback feedback2 = InterruptionMetadata.ToolFeedback.builder()
-                .name("get_weather")
-                .arguments("{\"city\": \"上海\"}")
-                .description("查询天气工具")
-                .build();
+        InterruptionMetadata.ToolFeedback feedback1 = createToolFeedback("execute_sql", "{\"query\": \"DELETE FROM users WHERE 1=1\"}", "执行 SQL 工具");
+        InterruptionMetadata.ToolFeedback feedback2 = createToolFeedback("get_weather", "{\"city\": \"上海\"}", "查询天气工具");
 
         InterruptionMetadata interruptionMetadata = InterruptionMetadata.builder()
                 .nodeId("test_node")
@@ -108,7 +86,7 @@ class HITLHelperTest {
 
         // 验证被编辑的工具
         InterruptionMetadata.ToolFeedback editedFeedback = result.toolFeedbacks().stream()
-                .filter(f -> f.name().equals("execute_sql"))
+                .filter(f -> "execute_sql".equals(f.name()))
                 .findFirst()
                 .orElseThrow();
 
@@ -117,7 +95,7 @@ class HITLHelperTest {
 
         // 验证其他工具被批准
         InterruptionMetadata.ToolFeedback otherFeedback = result.toolFeedbacks().stream()
-                .filter(f -> f.name().equals("get_weather"))
+                .filter(f -> "get_weather".equals(f.name()))
                 .findFirst()
                 .orElseThrow();
 
@@ -127,11 +105,7 @@ class HITLHelperTest {
     @Test
     void testEditToolNotFound() {
         // 准备测试数据
-        InterruptionMetadata.ToolFeedback feedback = InterruptionMetadata.ToolFeedback.builder()
-                .name("get_weather")
-                .arguments("{\"city\": \"北京\"}")
-                .description("查询天气工具")
-                .build();
+        InterruptionMetadata.ToolFeedback feedback = createToolFeedback("get_weather", "{\"city\": \"北京\"}", "查询天气工具");
 
         InterruptionMetadata interruptionMetadata = InterruptionMetadata.builder()
                 .nodeId("test_node")
@@ -147,5 +121,18 @@ class HITLHelperTest {
         assertNotNull(result);
         assertEquals(1, result.toolFeedbacks().size());
         assertEquals(InterruptionMetadata.ToolFeedback.FeedbackResult.APPROVED, result.toolFeedbacks().get(0).result());
+    }
+
+    /**
+     * 辅助方法：创建 ToolFeedback 测试数据
+     * 使用 builder 从空对象开始构建
+     */
+    private InterruptionMetadata.ToolFeedback createToolFeedback(String name, String arguments, String description) {
+        return InterruptionMetadata.ToolFeedback.builder()
+                .name(name)
+                .arguments(arguments)
+                .description(description)
+                .result(InterruptionMetadata.ToolFeedback.FeedbackResult.PENDING)
+                .build();
     }
 }
