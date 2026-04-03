@@ -11,6 +11,8 @@ import com.wcs.ai.alibaba.rag.tool.WebSearchTool;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.reader.TextReader;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.function.FunctionToolCallback;
@@ -40,7 +42,7 @@ public class RagConfig {
 
         // 2. 分割文档为块
         TokenTextSplitter splitter = new TokenTextSplitter();
-        List<Document> chunks = splitter.apply(documents);
+        List<Document> chunks = splitter.transform(documents);
         SimpleVectorStore vectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         vectorStore.add(chunks);
         return vectorStore;
@@ -96,6 +98,16 @@ public class RagConfig {
 //                .hooks(new RAGMessagesHook(vectorStore))
                 .interceptors(new RAGModelInterceptor(vectorStore))
                 .build();
+    }
+
+    @Bean
+    public RetrievalAugmentationAdvisor retrievalAugmentationAdvisor(VectorStore vectorStore) {
+        return RetrievalAugmentationAdvisor.builder()
+                .documentRetriever(
+                        VectorStoreDocumentRetriever.builder()
+                                .vectorStore(vectorStore)
+                                .build()
+                ).build();
     }
 
     @Bean

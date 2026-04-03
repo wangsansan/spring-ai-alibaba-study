@@ -5,7 +5,9 @@ import com.alibaba.cloud.ai.graph.agent.ReactAgent;
 import com.alibaba.fastjson.JSON;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,6 +26,12 @@ public class RagEngine {
 
     @Resource
     private ReactAgent hybridRAGAgent;
+
+    @Resource
+    private ChatClient chatClient;
+
+    @Resource
+    private RetrievalAugmentationAdvisor retrievalAugmentationAdvisor;
 
     @SneakyThrows
     public void call() {
@@ -46,6 +54,20 @@ public class RagEngine {
         System.out.println("******************call result  begin***************");
         invoke2.ifPresent(overAllState -> System.out.println(JSON.toJSONString(overAllState.data())));
         System.out.println("******************call result  end***************");
+    }
+
+    @SneakyThrows
+    public void adviceCall(String question) {
+        String systemInfo = """
+                    你是一个kafka技术专家，按照我给出的问题，给出相关答案
+                """;
+        System.out.println(chatClient
+                .prompt()
+                .system(systemInfo)
+                .user(question)
+                .advisors(retrievalAugmentationAdvisor)
+                .call()
+                .content());
     }
 
     @SneakyThrows

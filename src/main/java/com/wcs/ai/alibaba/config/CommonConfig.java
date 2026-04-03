@@ -28,6 +28,7 @@ import com.wcs.ai.alibaba.utils.Constants;
 import com.wcs.ai.alibaba.workflow.node.PreprocessorNode;
 import com.wcs.ai.alibaba.workflow.node.ValidatorNode;
 import lombok.SneakyThrows;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.function.FunctionToolCallback;
@@ -47,6 +48,12 @@ public class CommonConfig {
     public DashScopeApi dashScopeApi() {
         return  DashScopeApi.builder()
                 .apiKey(System.getenv(MODEL_API_KEY))
+                .build();
+    }
+
+    @Bean
+    public ChatClient chatClient(ChatModel dashScopeChatModel) {
+        return ChatClient.builder(dashScopeChatModel)
                 .build();
     }
 

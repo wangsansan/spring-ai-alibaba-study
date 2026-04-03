@@ -29,9 +29,10 @@ public class SpringAiAlibabaStudyApplication {
 //		ApplicationContextUtils.getBean(MultiAgentEngine.class).createByComplexAgent();
 //		ApplicationContextUtils.getBean(MultiAgentEngine.class).askConditionalAgent();
 //		ApplicationContextUtils.getBean(MultiAgentEngine.class).createDataByComplexAgent();
-		ApplicationContextUtils.getBean(MultiAgentEngine.class).callConditional();
+//		ApplicationContextUtils.getBean(MultiAgentEngine.class).callConditional();
 //		ApplicationContextUtils.getBean(RagEngine.class).call();
 //		ApplicationContextUtils.getBean(RagEngine.class).agenticCall();
+		ApplicationContextUtils.getBean(RagEngine.class).adviceCall("kafka的producer是怎么保证消息的顺序性的");
 //		ApplicationContextUtils.getBean(RagEngine.class).callWithMultiSourceAgent();
 //		ApplicationContextUtils.getBean(RagEngine.class).hybridCall();
 //        ApplicationContextUtils.getBean(OllamaEngine.class).call4Test();
