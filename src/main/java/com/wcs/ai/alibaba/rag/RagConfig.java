@@ -17,6 +17,7 @@ import org.springframework.ai.tool.function.FunctionToolCallback;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -28,11 +29,13 @@ import java.util.function.Function;
 @Configuration
 public class RagConfig {
 
+    @Value("classpath:rag/txt/kafka.md")
+    private Resource kafkaResource;
+
     @Bean
     public VectorStore vectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         // 1. 加载文档
-        Resource resource = new ClassPathResource("rag/txt/kafka.md");
-        TextReader textReader = new TextReader(resource);
+        TextReader textReader = new TextReader(kafkaResource);
         List<Document> documents = textReader.get();
 
         // 2. 分割文档为块
