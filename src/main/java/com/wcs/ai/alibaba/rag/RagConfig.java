@@ -61,8 +61,7 @@ public class RagConfig {
     @Bean
     public ToolCallback searchCallback(RagSearchTool searchTool) {
         return FunctionToolCallback.builder("search_documents",
-                        (Function<Request, Response>)
-                                request -> searchTool.search(request))
+                                searchTool::search)
                 .description("搜索文档以查找相关信息")
                 .inputType(Request.class)
                 .build();
