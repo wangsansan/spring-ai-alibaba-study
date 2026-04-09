@@ -53,8 +53,7 @@ public class CommonConfig {
 
     @Bean
     public ChatClient chatClient(ChatModel dashScopeChatModel) {
-        return ChatClient.builder(dashScopeChatModel)
-                .build();
+        return ChatClient.create(dashScopeChatModel);
     }
 
     /**
